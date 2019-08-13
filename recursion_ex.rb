@@ -248,3 +248,71 @@ def permutations(array)
     end
     total_permutations
 end
+
+
+# MAKE CHANGE
+make_change(99, [25, 10, 5, 1]) 
+3 * 25 # leaves me with 24
+2 * 10 # leaves 4
+0 * 5 # leaves 4
+4 * 1 # leaves 0
+def make_change_iter(amount, coins = [25, 10, 5, 1])
+  change = []
+  # relies on coins being in descending order. 
+  coins.each do |coin|
+    count = amount / coin
+    count.times { change << coin }
+    amount = amount - count * coin
+
+  end
+  change
+end
+
+p make_change_iter(99,[25, 10, 5, 1])
+
+def make_change_recur(amount, coins = [25, 10, 5, 1])
+  # Immediately tries to use as many of the biggest as possibles
+  change = []
+  first_coin = coins[0]
+  count = amount / first_coin
+  count.times { change << first_coin }
+  amount = amount - count * first_coin
+
+  if amount > 0
+    change = change + make_change_recur(amount, coins.drop(1))
+  end
+  change
+
+
+end
+
+p make_change_recur(99, [25, 10, 5, 1])
+
+
+def make_change_recur_ii(amount, coins)
+  return [] if amount == 0
+  # Instead: use only one of the biggest coin possible.
+  best_change = nil
+
+  coins.each do |coin|
+    next if coin > amount
+
+    change_for_rest = make_change_recur_ii(amount - coin, coins)
+    change = [coin] + change_for_rest
+    
+    if best_change.nil? || change.count < best_change.count
+      best_change = change
+    end
+    # p "Used 1 #{coin}"
+    # p change
+  end 
+
+  best_change
+end
+
+p make_change_recur_ii(14, [10, 7, 1])
+
+# Best of:
+# [10] + make_change(4)
+# [7] + make_change(7)
+# [1] + make_change(13)
